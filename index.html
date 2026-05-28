@@ -48,26 +48,18 @@
 
 <script>
 var WORDS = [
-  { word:"CASCO",       hint:"Protege la cabeza de impactos, caídas de objetos y golpes.",                          cat:"Cabeza" },
-  { word:"GUANTES",     hint:"Cubren las manos frente a cortes, químicos, calor o abrasión.",                       cat:"Manos" },
-  { word:"LENTES",      hint:"Protegen los ojos de partículas, salpicaduras y radiaciones.",                        cat:"Vista" },
-  { word:"BOTAS",       hint:"Calzado reforzado: antiperforante, dieléctrico o con puntera de acero.",              cat:"Pies" },
-  { word:"CHALECO",     hint:"Vestimenta de alta visibilidad para zonas de tránsito o baja luz.",                   cat:"Cuerpo" },
-  { word:"ARNES",       hint:"Sistema anticaídas sujeto al cuerpo, usado en trabajos en altura.",                   cat:"Altura" },
-  { word:"TAPONES",     hint:"Se insertan en el canal auditivo para reducir el ruido.",                             cat:"Oídos" },
-  { word:"MASCARILLA",  hint:"Cubre nariz y boca; filtra partículas, polvo o aerosoles.",                          cat:"Respiración" },
-  { word:"CARETA",      hint:"Protege toda la cara de salpicaduras, chispas o impactos.",                          cat:"Cara" },
-  { word:"RODILLERAS",  hint:"Protegen las rodillas al trabajar arrodillado en superficies duras.",                 cat:"Rodillas" },
-  { word:"OREJERAS",    hint:"Se colocan sobre las orejas para atenuar el ruido.",                                  cat:"Oídos" },
-  { word:"RESPIRADOR",  hint:"Filtra gases, vapores o partículas finas; más completo que la mascarilla.",           cat:"Respiración" },
-  { word:"OVEROL",      hint:"Prenda de cuerpo entero que protege de suciedad, químicos o derrames.",              cat:"Cuerpo" },
-  { word:"PANTALLA",    hint:"Protección visual usada en soldadura o trabajos con radiación.",                      cat:"Vista" },
-  { word:"ESLINGAS",    hint:"Bandas usadas junto al arnés para anclar al trabajador en altura.",                   cat:"Altura" },
+  { word:"CASCO",    hint:"Protege la cabeza de impactos, caídas de objetos y golpes.",               cat:"Cabeza" },
+  { word:"BOTAS",    hint:"Calzado reforzado: antiperforante, dieléctrico o con puntera de acero.",   cat:"Pies" },
+  { word:"CHALECO",  hint:"Vestimenta de alta visibilidad para zonas de tránsito o baja luz.",        cat:"Cuerpo" },
+  { word:"TAPONES",  hint:"Se insertan en el canal auditivo para reducir el ruido.",                  cat:"Oídos" },
+  { word:"OREJERAS", hint:"Se colocan sobre las orejas para atenuar el ruido en ambientes ruidosos.", cat:"Oídos" },
+  { word:"GUANTES",  hint:"Cubren las manos frente a cortes, químicos, calor o abrasión.",            cat:"Manos" },
+  { word:"LENTES",   hint:"Protegen los ojos de partículas, salpicaduras y radiaciones.",             cat:"Vista" },
 ];
 
 var PARTES = ["h","b","la","ra","ll","rl"];
 var LETRAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-var TOTAL  = 10;
+var TOTAL  = 7;
 
 var estado = {
   ronda: 0,
