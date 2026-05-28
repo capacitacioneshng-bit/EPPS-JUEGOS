@@ -3,422 +3,239 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ahorcado — Equipos de Protección Personal</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <title>Ahorcado — EPPs</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: #f0f4f8;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-
-    #game-wrapper {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-      padding: 2rem 2.5rem;
-      max-width: 700px;
-      width: 100%;
-    }
-
-    .header { margin-bottom: 1.2rem; }
-    .header h1 { font-size: 22px; font-weight: 800; color: #1a202c; display: flex; align-items: center; gap: 8px; }
-    .header p { font-size: 13px; color: #718096; margin-top: 4px; }
-
+    body { font-family: 'Nunito', sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+    #app { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,.10); padding: 2rem 2.5rem; max-width: 700px; width: 100%; }
+    h1 { font-size: 22px; font-weight: 800; color: #1a202c; margin-bottom: 4px; }
+    .sub { font-size: 13px; color: #718096; margin-bottom: 1.2rem; }
     .score-row { display: flex; gap: 10px; margin-bottom: 1.2rem; flex-wrap: wrap; }
-    .score-pill {
-      background: #f7fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #718096;
-    }
-    .score-pill span { color: #2d3748; }
-
-    .result-banner {
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 15px;
-      margin-bottom: 1rem;
-      text-align: center;
-      display: none;
-    }
-    .result-win  { background: #e6fffa; color: #276749; border: 1px solid #9ae6b4; }
-    .result-lose { background: #fff5f5; color: #c53030; border: 1px solid #fc8181; }
-
-    .game-area {
-      display: grid;
-      grid-template-columns: 190px 1fr;
-      gap: 1.5rem;
-      align-items: start;
-    }
-
-    .gallows-wrap {
-      background: #f7fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .errors-count { font-size: 12px; color: #718096; font-weight: 700; }
-
-    .category-tag { font-size: 11px; font-weight: 800; color: #185FA5; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
-
-    .hint-box {
-      background: #ebf4ff;
-      border-left: 3px solid #3182ce;
-      border-radius: 0 8px 8px 0;
-      padding: 8px 12px;
-      font-size: 13px;
-      color: #2d3748;
-      margin-bottom: 1.2rem;
-      line-height: 1.6;
-    }
-    .hint-box strong { color: #1a202c; font-weight: 800; }
-
-    .word-display {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin-bottom: 1.4rem;
-    }
-    .letter-box {
-      width: 30px;
-      height: 38px;
-      border-bottom: 2.5px solid #2d3748;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 800;
-      color: #185FA5;
-    }
-    .letter-box.space { border-bottom: none; width: 14px; }
-
+    .pill { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 700; color: #718096; }
+    .pill span { color: #2d3748; }
+    .banner { padding: 12px 16px; border-radius: 10px; font-weight: 700; font-size: 15px; margin-bottom: 1rem; text-align: center; display: none; }
+    .win  { background: #e6fffa; color: #276749; border: 1px solid #9ae6b4; }
+    .lose { background: #fff5f5; color: #c53030; border: 1px solid #fc8181; }
+    .grid { display: grid; grid-template-columns: 190px 1fr; gap: 1.5rem; align-items: start; }
+    .gallows-box { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .err-lbl { font-size: 12px; color: #718096; font-weight: 700; }
+    .cat { font-size: 11px; font-weight: 800; color: #185FA5; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .hint { background: #ebf4ff; border-left: 3px solid #3182ce; border-radius: 0 8px 8px 0; padding: 8px 12px; font-size: 13px; color: #2d3748; margin-bottom: 1.2rem; line-height: 1.6; }
+    .hint b { color: #1a202c; }
+    .word { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 1.4rem; min-height: 48px; }
+    .lb { width: 30px; height: 38px; border-bottom: 2.5px solid #2d3748; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #185FA5; }
+    .lb.sp { border-bottom: none; width: 14px; }
     .keyboard { display: flex; flex-wrap: wrap; gap: 5px; }
-    .key {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #cbd5e0;
-      border-radius: 6px;
-      background: #fff;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      color: #2d3748;
-      font-family: 'Nunito', sans-serif;
-      transition: all 0.12s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .key:hover:not(:disabled) { background: #ebf4ff; color: #185FA5; border-color: #185FA5; }
-    .key.correct { background: #e6fffa; color: #276749; border-color: #38a169; cursor: default; }
-    .key.wrong   { background: #f7fafc; color: #a0aec0; border-color: #e2e8f0; cursor: default; text-decoration: line-through; }
-
+    .key { width: 32px; height: 32px; border: 1px solid #cbd5e0; border-radius: 6px; background: #fff; font-size: 12px; font-weight: 800; cursor: pointer; color: #2d3748; font-family: 'Nunito', sans-serif; transition: all .12s; }
+    .key:hover:not([disabled]) { background: #ebf4ff; color: #185FA5; border-color: #185FA5; }
+    .key.ok  { background: #e6fffa; color: #276749; border-color: #38a169; cursor: default; }
+    .key.bad { background: #f7fafc; color: #a0aec0; border-color: #e2e8f0; cursor: default; text-decoration: line-through; }
     .progress { font-size: 12px; color: #a0aec0; margin-top: 8px; }
-
-    .btn-next {
-      background: #185FA5;
-      color: #fff;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      font-family: 'Nunito', sans-serif;
-      transition: background 0.15s;
-      margin-top: 1rem;
-      display: none;
-    }
-    .btn-next:hover { background: #0c447c; }
-
-    /* Pantalla final */
-    .final-screen { text-align: center; padding: 2rem 0; }
-    .final-score { font-size: 64px; font-weight: 800; color: #185FA5; line-height: 1; }
-    .final-score span { font-size: 28px; color: #a0aec0; }
+    .btn { background: #185FA5; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-top: 1rem; }
+    .btn:hover { background: #0c447c; }
+    .final { text-align: center; padding: 2rem 0; }
+    .big-score { font-size: 64px; font-weight: 800; color: #185FA5; line-height: 1; }
+    .big-score span { font-size: 28px; color: #a0aec0; }
     .final-msg { font-size: 15px; color: #718096; margin-top: 10px; }
-    .final-bar { background: #e2e8f0; border-radius: 20px; height: 12px; margin: 1.2rem auto; max-width: 280px; overflow: hidden; }
-    .final-bar-fill { height: 100%; border-radius: 20px; background: #185FA5; transition: width 0.8s ease; }
-
-    @media (max-width: 520px) {
-      #game-wrapper { padding: 1.25rem; }
-      .game-area { grid-template-columns: 1fr; }
-      .gallows-wrap { flex-direction: row; justify-content: space-around; }
-    }
+    .bar-wrap { background: #e2e8f0; border-radius: 20px; height: 12px; margin: 1.2rem auto; max-width: 280px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 20px; background: #185FA5; transition: width .8s ease; }
+    @media (max-width: 520px) { #app { padding: 1.25rem; } .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-
-<div id="game-wrapper">
-  <div id="game-content">
-    <div class="header">
-      <h1>🦺 Ahorcado — EPPs</h1>
-      <p>Adivina el equipo de protección personal letra por letra.</p>
-    </div>
-
-    <div class="score-row">
-      <div class="score-pill">Correctas: <span id="score-correct">0</span></div>
-      <div class="score-pill">Ronda: <span id="score-round">1</span> / 10</div>
-    </div>
-
-    <div id="result-banner" class="result-banner"></div>
-
-    <div class="game-area">
-      <div class="gallows-wrap">
-        <svg id="gallows" width="120" height="160" viewBox="0 0 120 160" aria-label="Dibujo del ahorcado">
-          <line x1="10" y1="155" x2="110" y2="155" stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-          <line x1="30"  y1="155" x2="30"  y2="10"  stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-          <line x1="30"  y1="10"  x2="80"  y2="10"  stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-          <line x1="80"  y1="10"  x2="80"  y2="30"  stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-          <circle id="p-head" cx="80" cy="42" r="12" stroke="#e53e3e" stroke-width="2.5" fill="none" style="display:none"/>
-          <line id="p-body" x1="80" y1="54"  x2="80"  y2="100" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-          <line id="p-larm" x1="80" y1="65"  x2="58"  y2="85"  stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-          <line id="p-rarm" x1="80" y1="65"  x2="102" y2="85"  stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-          <line id="p-lleg" x1="80" y1="100" x2="60"  y2="130" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-          <line id="p-rleg" x1="80" y1="100" x2="100" y2="130" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-        </svg>
-        <div class="errors-count" id="errors-count">Errores: 0 / 6</div>
-      </div>
-
-      <div>
-        <div class="category-tag" id="category-tag"></div>
-        <div class="hint-box" id="hint-box"></div>
-        <div class="word-display" id="word-display"></div>
-        <div class="keyboard" id="keyboard"></div>
-        <div class="progress" id="progress-text"></div>
-      </div>
-    </div>
-
-    <button class="btn-next" id="btn-next" onclick="nextRound()">Siguiente palabra →</button>
-  </div>
-</div>
+<div id="app"></div>
 
 <script>
-  const WORDS = [
-    { word: "CASCO",       hint: "Protege la cabeza de impactos, caídas de objetos y golpes.",                                    category: "Cabeza" },
-    { word: "GUANTES",     hint: "Cubren las manos frente a cortes, químicos, calor o abrasión.",                                  category: "Manos" },
-    { word: "LENTES",      hint: "Protegen los ojos de partículas, salpicaduras y radiaciones.",                                   category: "Vista" },
-    { word: "BOTAS",       hint: "Calzado reforzado: antiperforante, dieléctrico o con puntera de acero.",                         category: "Pies" },
-    { word: "CHALECO",     hint: "Vestimenta de alta visibilidad para ser visto en zonas de tránsito o baja luz.",                 category: "Cuerpo" },
-    { word: "ARNES",       hint: "Sistema anticaídas sujeto al cuerpo, usado en trabajos en altura.",                              category: "Altura" },
-    { word: "TAPONES",     hint: "Se insertan en el canal auditivo para reducir el ruido.",                                        category: "Oídos" },
-    { word: "MASCARILLA",  hint: "Cubre nariz y boca; filtra partículas, polvo o aerosoles.",                                      category: "Respiración" },
-    { word: "CARETA",      hint: "Protege toda la cara de salpicaduras, chispas o impactos.",                                      category: "Cara" },
-    { word: "RODILLERAS",  hint: "Protegen las rodillas al trabajar arrodillado en superficies duras.",                            category: "Rodillas" },
-    { word: "OREJERAS",    hint: "Se colocan sobre las orejas para atenuar el ruido en ambientes ruidosos.",                       category: "Oídos" },
-    { word: "RESPIRADOR",  hint: "Equipo más completo que la mascarilla; filtra gases, vapores o material particulado fino.",      category: "Respiración" },
-    { word: "OVEROL",      hint: "Prenda de cuerpo entero que protege la ropa y la piel de suciedad, químicos o derrames.",        category: "Cuerpo" },
-    { word: "ESLINGAS",    hint: "Bandas o cuerdas usadas junto al arnés para anclar al trabajador en altura.",                    category: "Altura" },
-    { word: "PANTALLA",    hint: "Protección visual fija o abatible usada en soldadura o trabajos con radiación.",                 category: "Vista" },
-  ];
+var WORDS = [
+  { word:"CASCO",       hint:"Protege la cabeza de impactos, caídas de objetos y golpes.",                          cat:"Cabeza" },
+  { word:"GUANTES",     hint:"Cubren las manos frente a cortes, químicos, calor o abrasión.",                       cat:"Manos" },
+  { word:"LENTES",      hint:"Protegen los ojos de partículas, salpicaduras y radiaciones.",                        cat:"Vista" },
+  { word:"BOTAS",       hint:"Calzado reforzado: antiperforante, dieléctrico o con puntera de acero.",              cat:"Pies" },
+  { word:"CHALECO",     hint:"Vestimenta de alta visibilidad para zonas de tránsito o baja luz.",                   cat:"Cuerpo" },
+  { word:"ARNES",       hint:"Sistema anticaídas sujeto al cuerpo, usado en trabajos en altura.",                   cat:"Altura" },
+  { word:"TAPONES",     hint:"Se insertan en el canal auditivo para reducir el ruido.",                             cat:"Oídos" },
+  { word:"MASCARILLA",  hint:"Cubre nariz y boca; filtra partículas, polvo o aerosoles.",                          cat:"Respiración" },
+  { word:"CARETA",      hint:"Protege toda la cara de salpicaduras, chispas o impactos.",                          cat:"Cara" },
+  { word:"RODILLERAS",  hint:"Protegen las rodillas al trabajar arrodillado en superficies duras.",                 cat:"Rodillas" },
+  { word:"OREJERAS",    hint:"Se colocan sobre las orejas para atenuar el ruido.",                                  cat:"Oídos" },
+  { word:"RESPIRADOR",  hint:"Filtra gases, vapores o partículas finas; más completo que la mascarilla.",           cat:"Respiración" },
+  { word:"OVEROL",      hint:"Prenda de cuerpo entero que protege de suciedad, químicos o derrames.",              cat:"Cuerpo" },
+  { word:"PANTALLA",    hint:"Protección visual usada en soldadura o trabajos con radiación.",                      cat:"Vista" },
+  { word:"ESLINGAS",    hint:"Bandas usadas junto al arnés para anclar al trabajador en altura.",                   cat:"Altura" },
+];
 
-  const PARTS = ["p-head","p-body","p-larm","p-rarm","p-lleg","p-rleg"];
-  const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+var PARTES = ["h","b","la","ra","ll","rl"];
+var LETRAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+var TOTAL  = 10;
 
-  let current, errors, guessed;
-  let roundIdx = 0, correctRounds = 0;
-  const TOTAL = 10;
-  let usedIdx = [];
+var estado = {
+  ronda: 0,
+  correctas: 0,
+  usados: [],
+  actual: null,
+  errores: 0,
+  adivinadas: {}
+};
 
-  function pickWord() {
-    if (usedIdx.length >= WORDS.length) usedIdx = [];
-    const avail = WORDS.map((_,i)=>i).filter(i=>!usedIdx.includes(i));
-    const idx = avail[Math.floor(Math.random()*avail.length)];
-    usedIdx.push(idx);
-    return WORDS[idx];
+/* ── helpers ── */
+function elegirPalabra() {
+  if (estado.usados.length >= WORDS.length) estado.usados = [];
+  var libres = WORDS.map(function(_,i){ return i; })
+                    .filter(function(i){ return estado.usados.indexOf(i) === -1; });
+  var idx = libres[Math.floor(Math.random() * libres.length)];
+  estado.usados.push(idx);
+  return WORDS[idx];
+}
+
+function svgAhorcado() {
+  var e = estado.errores;
+  return '<svg width="120" height="160" viewBox="0 0 120 160">'
+    + '<line x1="10" y1="155" x2="110" y2="155" stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>'
+    + '<line x1="30" y1="155" x2="30" y2="10" stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>'
+    + '<line x1="30" y1="10" x2="80" y2="10" stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>'
+    + '<line x1="80" y1="10" x2="80" y2="30" stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>'
+    + (e>=1 ? '<circle cx="80" cy="42" r="12" stroke="#e53e3e" stroke-width="2.5" fill="none"/>' : '')
+    + (e>=2 ? '<line x1="80" y1="54" x2="80" y2="100" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round"/>' : '')
+    + (e>=3 ? '<line x1="80" y1="65" x2="58" y2="85" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round"/>' : '')
+    + (e>=4 ? '<line x1="80" y1="65" x2="102" y2="85" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round"/>' : '')
+    + (e>=5 ? '<line x1="80" y1="100" x2="60" y2="130" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round"/>' : '')
+    + (e>=6 ? '<line x1="80" y1="100" x2="100" y2="130" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round"/>' : '')
+    + '</svg>';
+}
+
+function wordHTML() {
+  return estado.actual.word.split("").map(function(ch) {
+    if (ch === " ") return '<div class="lb sp"></div>';
+    return '<div class="lb">' + (estado.adivinadas[ch] ? ch : "") + '</div>';
+  }).join("");
+}
+
+function keyboardHTML() {
+  return LETRAS.map(function(l) {
+    var cls = "key";
+    var dis = "";
+    if (estado.adivinadas[l] !== undefined) {
+      cls += estado.actual.word.indexOf(l) !== -1 ? " ok" : " bad";
+      dis = " disabled";
+    }
+    return '<button class="' + cls + '"' + dis + ' data-l="' + l + '">' + l + '</button>';
+  }).join("");
+}
+
+function terminado() {
+  var letras = [];
+  estado.actual.word.replace(/ /g,"").split("").forEach(function(c){
+    if (letras.indexOf(c) === -1) letras.push(c);
+  });
+  var gano  = letras.every(function(l){ return estado.adivinadas[l]; });
+  var perdio = estado.errores >= 6;
+  return gano ? "gano" : perdio ? "perdio" : null;
+}
+
+/* ── render ── */
+function render() {
+  var fin = terminado();
+  var bannerHTML = "";
+  var btnHTML    = "";
+
+  if (fin === "gano") {
+    bannerHTML = '<div class="banner win" style="display:block">✅ ¡Correcto! La palabra era: ' + estado.actual.word + '</div>';
+    btnHTML    = '<button class="btn" id="btn-sig">' + (estado.ronda + 1 >= TOTAL ? "Ver resultados finales" : "Siguiente palabra →") + '</button>';
+  } else if (fin === "perdio") {
+    bannerHTML = '<div class="banner lose" style="display:block">❌ La respuesta era: ' + estado.actual.word + '</div>';
+    btnHTML    = '<button class="btn" id="btn-sig">' + (estado.ronda + 1 >= TOTAL ? "Ver resultados finales" : "Siguiente palabra →") + '</button>';
   }
 
-  function initRound() {
-    current = pickWord();
-    errors = 0;
-    guessed = new Set();
+  document.getElementById("app").innerHTML =
+    '<h1>🦺 Ahorcado — EPPs</h1>'
+    + '<p class="sub">Adivina el equipo de protección personal letra por letra.</p>'
+    + '<div class="score-row">'
+    +   '<div class="pill">Correctas: <span>' + estado.correctas + '</span></div>'
+    +   '<div class="pill">Ronda: <span>' + (estado.ronda + 1) + ' / ' + TOTAL + '</span></div>'
+    + '</div>'
+    + bannerHTML
+    + '<div class="grid">'
+    +   '<div class="gallows-box">' + svgAhorcado() + '<div class="err-lbl">Errores: ' + estado.errores + ' / 6</div></div>'
+    +   '<div>'
+    +     '<div class="cat">Categoría: ' + estado.actual.cat + '</div>'
+    +     '<div class="hint"><b>Pista:</b> ' + estado.actual.hint + '</div>'
+    +     '<div class="word">' + wordHTML() + '</div>'
+    +     '<div class="keyboard">' + (fin ? "" : keyboardHTML()) + '</div>'
+    +     '<div class="progress">' + (fin ? "Ronda " + (estado.ronda+1) + " de " + TOTAL : "") + '</div>'
+    +   '</div>'
+    + '</div>'
+    + btnHTML;
 
-    PARTS.forEach(id => document.getElementById(id).style.display = "none");
-    document.getElementById("errors-count").textContent = "Errores: 0 / 6";
-    document.getElementById("category-tag").textContent = "Categoría: " + current.category;
-    document.getElementById("hint-box").innerHTML = "<strong>Pista:</strong> " + current.hint;
-    document.getElementById("result-banner").style.display = "none";
-    document.getElementById("btn-next").style.display = "none";
-    document.getElementById("score-round").textContent = roundIdx + 1;
-    document.getElementById("progress-text").textContent = "";
-    document.getElementById("score-correct").textContent = correctRounds;
-
-    renderWord();
-    renderKeyboard();
-  }
-
-  function renderWord() {
-    const c = document.getElementById("word-display");
-    c.innerHTML = "";
-    current.word.split("").forEach(ch => {
-      const box = document.createElement("div");
-      box.className = ch === " " ? "letter-box space" : "letter-box";
-      if (ch !== " ") box.textContent = guessed.has(ch) ? ch : "";
-      c.appendChild(box);
+  /* eventos del teclado */
+  if (!fin) {
+    document.querySelectorAll(".key").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var letra = this.getAttribute("data-l");
+        if (estado.adivinadas[letra] !== undefined) return;
+        if (estado.actual.word.indexOf(letra) !== -1) {
+          estado.adivinadas[letra] = true;
+        } else {
+          estado.adivinadas[letra] = false;
+          estado.errores++;
+        }
+        render();
+      });
     });
   }
 
-  function renderKeyboard() {
-    const kb = document.getElementById("keyboard");
-    kb.innerHTML = "";
-    LETTERS.forEach(l => {
-      const btn = document.createElement("button");
-      btn.className = "key";
-      btn.textContent = l;
-      btn.id = "key-" + l;
-      if (guessed.has(l)) {
-        btn.className = "key " + (current.word.includes(l) ? "correct" : "wrong");
-        btn.disabled = true;
+  /* botón siguiente */
+  var btnSig = document.getElementById("btn-sig");
+  if (btnSig) {
+    btnSig.addEventListener("click", function() {
+      if (fin === "gano") estado.correctas++;
+      estado.ronda++;
+      if (estado.ronda >= TOTAL) {
+        mostrarFinal();
+      } else {
+        estado.actual     = elegirPalabra();
+        estado.errores    = 0;
+        estado.adivinadas = {};
+        render();
       }
-      btn.onclick = () => guess(l);
-      kb.appendChild(btn);
     });
   }
+}
 
-  function guess(letter) {
-    if (guessed.has(letter)) return;
-    guessed.add(letter);
-    const keyEl = document.getElementById("key-" + letter);
-    if (current.word.includes(letter)) {
-      if (keyEl) { keyEl.className = "key correct"; keyEl.disabled = true; }
-    } else {
-      errors++;
-      if (keyEl) { keyEl.className = "key wrong"; keyEl.disabled = true; }
-      if (errors <= PARTS.length) document.getElementById(PARTS[errors-1]).style.display = "";
-      document.getElementById("errors-count").textContent = "Errores: " + errors + " / 6";
-    }
-    renderWord();
-    checkEnd();
-  }
+function mostrarFinal() {
+  var pct = Math.round((estado.correctas / TOTAL) * 100);
+  var msg;
+  if (pct >= 90)      msg = "¡Excelente! Dominas los EPPs. 🏆";
+  else if (pct >= 70) msg = "¡Muy bien! Sigue repasando los EPPs. 👷";
+  else if (pct >= 50) msg = "Vas por buen camino, pero hay EPPs por reforzar.";
+  else                msg = "Te recomendamos repasar los equipos de protección personal.";
 
-  function checkEnd() {
-    const letters = [...new Set(current.word.replace(/ /g,"").split(""))];
-    const won  = letters.every(l => guessed.has(l));
-    const lost = errors >= 6;
-    if (!won && !lost) return;
+  document.getElementById("app").innerHTML =
+    '<div class="final">'
+    + '<h1>Resultados finales 🎓</h1>'
+    + '<p class="sub">Capacitación en Equipos de Protección Personal</p>'
+    + '<div class="big-score">' + estado.correctas + '<span>/' + TOTAL + '</span></div>'
+    + '<div class="bar-wrap"><div class="bar-fill" id="barf" style="width:0%"></div></div>'
+    + '<div class="final-msg">' + msg + '</div>'
+    + '<button class="btn" id="btn-reiniciar" style="margin-top:1.5rem">Jugar de nuevo</button>'
+    + '</div>';
 
-    if (won) {
-      correctRounds++;
-      document.getElementById("score-correct").textContent = correctRounds;
-      showBanner("win", "✅ ¡Correcto! La palabra era: " + current.word);
-    } else {
-      showBanner("lose", "❌ La respuesta era: " + current.word);
-    }
+  setTimeout(function(){ document.getElementById("barf").style.width = pct + "%"; }, 100);
 
-    disableKeyboard();
-    const btn = document.getElementById("btn-next");
-    btn.textContent = (roundIdx + 1 >= TOTAL) ? "Ver resultados finales" : "Siguiente palabra →";
-    btn.style.display = "";
-    document.getElementById("progress-text").textContent = "Ronda " + (roundIdx+1) + " de " + TOTAL;
-  }
+  document.getElementById("btn-reiniciar").addEventListener("click", function() {
+    estado.ronda     = 0;
+    estado.correctas = 0;
+    estado.usados    = [];
+    estado.errores   = 0;
+    estado.adivinadas = {};
+    estado.actual    = elegirPalabra();
+    render();
+  });
+}
 
-  function showBanner(type, msg) {
-    const el = document.getElementById("result-banner");
-    el.className = "result-banner result-" + type;
-    el.textContent = msg;
-    el.style.display = "block";
-  }
-
-  function disableKeyboard() {
-    LETTERS.forEach(l => {
-      const el = document.getElementById("key-" + l);
-      if (el) el.disabled = true;
-    });
-  }
-
-  function nextRound() {
-    roundIdx++;
-    if (roundIdx >= TOTAL) { showFinal(); return; }
-    initRound();
-  }
-
-  function showFinal() {
-    const pct = Math.round((correctRounds / TOTAL) * 100);
-    document.getElementById("game-content").innerHTML = `
-      <div class="final-screen">
-        <h1 style="font-size:22px; font-weight:800; color:#1a202c; margin-bottom:6px;">Resultados finales 🎓</h1>
-        <p style="font-size:13px; color:#718096; margin-bottom:1.5rem;">Capacitación en Equipos de Protección Personal</p>
-        <div class="final-score">${correctRounds}<span>/${TOTAL}</span></div>
-        <div class="final-bar"><div class="final-bar-fill" id="bar-fill" style="width:0%"></div></div>
-        <div class="final-msg">${getMessage(correctRounds, TOTAL)}</div>
-        <button class="btn-next" style="display:inline-block; margin-top:1.5rem;" onclick="restartGame()">
-          Jugar de nuevo
-        </button>
-      </div>
-    `;
-    setTimeout(() => {
-      const el = document.getElementById("bar-fill");
-      if (el) el.style.width = pct + "%";
-    }, 100);
-  }
-
-  function getMessage(c, t) {
-    const p = c / t;
-    if (p >= 0.9) return "¡Excelente! Dominas los EPPs. 🏆";
-    if (p >= 0.7) return "¡Muy bien! Sigue repasando los EPPs. 👷";
-    if (p >= 0.5) return "Vas por buen camino, pero hay EPPs por reforzar.";
-    return "Te recomendamos repasar los equipos de protección personal.";
-  }
-
-  function restartGame() {
-    roundIdx = 0;
-    correctRounds = 0;
-    usedIdx = [];
-    document.getElementById("game-content").innerHTML = `
-      <div class="header">
-        <h1>🦺 Ahorcado — EPPs</h1>
-        <p>Adivina el equipo de protección personal letra por letra.</p>
-      </div>
-      <div class="score-row">
-        <div class="score-pill">Correctas: <span id="score-correct">0</span></div>
-        <div class="score-pill">Ronda: <span id="score-round">1</span> / 10</div>
-      </div>
-      <div id="result-banner" class="result-banner"></div>
-      <div class="game-area">
-        <div class="gallows-wrap">
-          <svg id="gallows" width="120" height="160" viewBox="0 0 120 160" aria-label="Dibujo del ahorcado">
-            <line x1="10" y1="155" x2="110" y2="155" stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-            <line x1="30"  y1="155" x2="30"  y2="10"  stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-            <line x1="30"  y1="10"  x2="80"  y2="10"  stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-            <line x1="80"  y1="10"  x2="80"  y2="30"  stroke="#2d3748" stroke-width="3" stroke-linecap="round"/>
-            <circle id="p-head" cx="80" cy="42" r="12" stroke="#e53e3e" stroke-width="2.5" fill="none" style="display:none"/>
-            <line id="p-body" x1="80" y1="54"  x2="80"  y2="100" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-            <line id="p-larm" x1="80" y1="65"  x2="58"  y2="85"  stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-            <line id="p-rarm" x1="80" y1="65"  x2="102" y2="85"  stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-            <line id="p-lleg" x1="80" y1="100" x2="60"  y2="130" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-            <line id="p-rleg" x1="80" y1="100" x2="100" y2="130" stroke="#e53e3e" stroke-width="2.5" stroke-linecap="round" style="display:none"/>
-          </svg>
-          <div class="errors-count" id="errors-count">Errores: 0 / 6</div>
-        </div>
-        <div>
-          <div class="category-tag" id="category-tag"></div>
-          <div class="hint-box" id="hint-box"></div>
-          <div class="word-display" id="word-display"></div>
-          <div class="keyboard" id="keyboard"></div>
-          <div class="progress" id="progress-text"></div>
-        </div>
-      </div>
-      <button class="btn-next" id="btn-next" onclick="nextRound()">Siguiente palabra →</button>
-    `;
-    initRound();
-  }
-
-  initRound();
+/* ── inicio ── */
+estado.actual = elegirPalabra();
+render();
 </script>
 </body>
 </html>
